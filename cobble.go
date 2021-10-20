@@ -1,7 +1,7 @@
 // Copyright Andrew "Stinger" Abramov
 // All Rights Reserved
 
-// Scala-style collection operations
+// Package cobble provides Scala-style collection operations
 package cobble
 
 import "errors"

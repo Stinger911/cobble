@@ -6,13 +6,14 @@ import (
 	"sync"
 )
 
+// Seq is the holder of the operations wich may be chained if functional style
 type Seq struct {
 	val reflect.Value
 	tp  reflect.Type
 	err error
 }
 
-// Creates new Sequence which provides set of operations
+// NewSeq is  a factory to create new Sequence which provides set of operations
 func NewSeq(source interface{}) (*Seq, error) {
 	srcV := reflect.ValueOf(source)
 	kind := srcV.Kind()
@@ -57,28 +58,28 @@ func NewSeq(source interface{}) (*Seq, error) {
 	return &Seq{wrapped, elemT, nil}, nil
 }
 
-// Verify, is the Sequence has the errors in previous operations
+// IsError verifies, is the Sequence has the errors in previous operations
 //
-// If the error was occured all consequent operations will be skipped
+// If the error was occurred all consequent operations will be skipped
 // (original sequence will be return to the chain)
 func (s *Seq) IsError() bool {
 	return s.err != nil
 }
 
-// Resets the error and returns the sequence for the chain
+// ResetError drops the error and returns the sequence for the chain
 func (s *Seq) ResetError() *Seq {
 	s.err = nil
 	return s
 }
 
-// Gets the error (may be nil if no errors occured)
+// Error returns the instance of error (may be nil if no errors occurred)
 func (s *Seq) Error() error {
 	return s.err
 }
 
 // *** Collection operations
 
-// Returns a new collection containing the elements from
+// Append returns a new collection containing the elements from
 // the called collection followed by the element given as operand.
 //
 // In case of incompatible type of operand the Error() flag for the
@@ -96,7 +97,7 @@ func (s *Seq) Append(e interface{}) *Seq {
 	return &Seq{nval, s.tp, s.err}
 }
 
-// Returns a new collection containing the elements from the called collection
+// Extend returns a new collection containing the elements from the called collection
 // followed by the elements from the operand.
 //
 // In case of incompatible type of operand the Error() flag for the
@@ -175,10 +176,11 @@ func (s *Seq) Extend(e *Seq) *Seq {
 	return &Seq{wrapped, s.tp, res_err}
 }
 
-// Returns a new collection containing the elements from the called collection
+// ExtendN returns a new collection containing the elements from the called collection
 // followed by the elements from the operand.
 //
-// Argument is the native collection (`Array` or `Slice`)
+// Argument is the native collection (`Array` or `Slice`). N in the method's name is
+// fo **Native**
 //
 // In case of incompatible type of operand the Error() flag for the
 // source collection will be set and source collection will be returned
@@ -191,7 +193,7 @@ func (s *Seq) ExtendN(e interface{}) *Seq {
 	return s.Extend(col)
 }
 
-// Returns an element on sppecific indez, or error if index less tan zero or
+// Get returns an element on sppecific indez, or error if index less tan zero or
 // greater than collection size
 func (s *Seq) Get(index int) (interface{}, error) {
 	if index < 0 || index >= s.val.Len() {
@@ -200,7 +202,7 @@ func (s *Seq) Get(index int) (interface{}, error) {
 	return s.val.Index(index).Interface(), nil
 }
 
-// Selects the first element of this iterable collection.
+// Head selects the first element of this iterable collection.
 //
 // Returns the `ErrEmptySequence` error if no elements in collection
 func (s *Seq) Head() (interface{}, error) {
@@ -210,12 +212,12 @@ func (s *Seq) Head() (interface{}, error) {
 	return s.val.Index(0).Interface(), nil
 }
 
-// The size of this collection
+// Size returns the size of this collection
 func (s *Seq) Size() int {
 	return s.val.Len()
 }
 
-// Converts this iterable collection to an array.
+// ToArray converts this iterable collection to a native array.
 //
 // As a generic, this function returns the `interface`, so result should be
 // typecasted to  the desired array typee. Refer the examples how to do this.

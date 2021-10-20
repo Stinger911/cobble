@@ -12,7 +12,7 @@ func TestCreationEmpty(t *testing.T) {
 		t.Fatal("Error in construction: ", e)
 	}
 	if c.Size() != 0 {
-		t.Fatal("Size MUST be 3, found: ", c.Size())
+		t.Fatal("Size MUST be 0, found: ", c.Size())
 	}
 }
 
@@ -206,4 +206,16 @@ func ExampleSeq_ToArray_sure() {
 	fmt.Println("Result is ", array)
 	// Output:
 	// Result is  [1 2 3]
+}
+
+func ExampleNewSeq() {
+	_, e1 := NewSeq([]int{}) // empty sequence of ints
+	if e1 == nil {
+	} // everything is ok
+	c2, e2 := NewSeq([]int{1, 2, 3}) // sequence of 3 ints
+	if e2 == nil && c2.Size() == 3 {
+	} // everything is ok
+	c3, e3 := NewSeq([]interface{}{1, "2", 3.1415}) // sequence of different types. yes, it's possible, but on your own risk
+	if e3 == nil && c3.Size() == 3 {
+	} // everything is ok
 }
