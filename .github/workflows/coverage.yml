@@ -1,0 +1,38 @@
+name: CodeCov
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Test
+      run: |
+          CVPKG=$(go list ./... | grep -v mocks | tr '\n' ',')
+          go test -coverpkg=${CVPKG} -coverprofile=coverage.out -covermode=count  ./...
+          
+    - name: Publish cod cov badge
+      run: |
+        set -x
+        total=`go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'`
+        if (( $(echo "$total <= 50" | bc -l) )) ; then
+          COLOR=red
+        elif (( $(echo "$total > 80" | bc -l) )); then
+          COLOR=green
+        else
+          COLOR=orange
+        fi
+        curl "https://img.shields.io/badge/coavrege-$total%25-$COLOR" > cobble_badge.svg
+        curl -Ffile=@cobble_badge.svg https://files.lab18.net/upload?token=$CLOUD_TOKEN
+      env:
+        CLOUD_TOKEN: ${{ secrets.CLOUD_TOKEN }}
