@@ -6,6 +6,7 @@ package cobble
 
 import "errors"
 
+// Common error codes
 var (
 	ErrEmptySequence  = errors.New("No elements in the sequence")
 	ErrSourceNotArray = errors.New("Input value is not an array")

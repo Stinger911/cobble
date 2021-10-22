@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-// Seq is the holder of the operations wich may be chained if functional style
+// Seq is the holder of the operations which may be chained if functional style
 type Seq struct {
 	val reflect.Value
 	tp  reflect.Type
@@ -165,15 +165,15 @@ func (s *Seq) Extend(e *Seq) *Seq {
 	}()
 
 	// return the first error
-	var res_err = s.err
+	var resErr = s.err
 	for err := range errs {
 		if err != nil {
-			res_err = err
+			resErr = err
 			break
 		}
 	}
 
-	return &Seq{wrapped, s.tp, res_err}
+	return &Seq{wrapped, s.tp, resErr}
 }
 
 // ExtendN returns a new collection containing the elements from the called collection
