@@ -32,7 +32,7 @@ jobs:
         else
           COLOR=orange
         fi
-        curl "https://img.shields.io/badge/coavrege-$total%25-$COLOR" > cobble_badge.svg
+        curl "https://img.shields.io/badge/coverage-$total%25-$COLOR" > cobble_badge.svg
         curl -Ffile=@cobble_badge.svg https://files.lab18.net/upload?token=${CLOUD_TOKEN}
       env:
         CLOUD_TOKEN: ${{ secrets.CLOUD_TOKEN }}
